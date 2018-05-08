@@ -3,28 +3,26 @@ extern crate actix_web;
 extern crate bytes;
 extern crate futures;
 extern crate serde;
+#[macro_use]
 extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
 
 use actix::prelude::*;
-use actix_web::{http, server, App, HttpRequest, HttpResponse};
+use actix_web::{server, App, HttpRequest, HttpResponse, Json};
 
-#[derive(Serialize, Deserialize)]
-pub struct Message<'a> {
-    pub message: &'a str,
+#[derive(Serialize, Deserialize, Debug)]
+struct User {
+    name: String,
 }
 
-fn json(req: HttpRequest) -> HttpResponse {
-    let message = Message {
-        message: "Hello, World!",
-    };
-    let json = serde_json::to_string(&message).unwrap();
+fn list(req: HttpRequest) -> HttpResponse {
+    HttpResponse::build_from(&req).json(json!({"Hello": "world!"}))
+}
 
-    HttpResponse::build_from(&req)
-        .header(http::header::SERVER, "Actix")
-        .header(http::header::CONTENT_TYPE, "application/json")
-        .body(json)
+fn create(req: HttpRequest, body: Json<User>) -> HttpResponse {
+    let user = body.into_inner();
+    HttpResponse::build_from(&req).json(user)
 }
 
 fn main() {
@@ -33,7 +31,10 @@ fn main() {
     // start http server
     server::new(|| {
         App::new()
-            .resource("/json", |r| r.f(json))
+            .resource("/users", |r| {
+                r.get().with(list);
+                r.post().with2(create);
+            })
     }).bind("0.0.0.0:8080")
         .unwrap()
         .start();
