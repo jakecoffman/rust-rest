@@ -1,0 +1,23 @@
+[package]
+name = "rust-rest"
+version = "0.1.0"
+authors = ["Jake Coffman <jake@jakecoffman.com>"]
+
+[dependencies]
+askama = "0.6"
+serde = "1.0"
+serde_json = "1.0"
+serde_derive = "1.0"
+rand = "0.4"
+bytes = "0.4"
+num_cpus = "1.0"
+futures = "0.1"
+tokio-io = "=0.1.5"
+tokio-core = "=0.1.12"
+http = "0.1"
+diesel = { version = "1.2", features = ["postgres"] }
+postgres = "0.15"
+horrorshow = "0.6"
+
+actix = "0.5"
+actix-web = "^0.5"
