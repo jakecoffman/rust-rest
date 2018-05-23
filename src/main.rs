@@ -7,38 +7,38 @@ extern crate serde;
 extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
+extern crate env_logger;
 
 use actix::prelude::*;
-use actix_web::{server, App, HttpRequest, HttpResponse, Json};
+use actix_web::{middleware, server, App, HttpResponse};
+use actix_web::dev::ResourceHandler;
+use std::cell::Cell;
 
-#[derive(Serialize, Deserialize, Debug)]
-struct User {
-    name: String,
-}
+mod users;
 
-fn list(req: HttpRequest) -> HttpResponse {
-    HttpResponse::build_from(&req).json(json!({"Hello": "world!"}))
-}
-
-fn create(req: HttpRequest, body: Json<User>) -> HttpResponse {
-    let user = body.into_inner();
-    HttpResponse::build_from(&req).json(user)
+pub struct AppState {
+    pub counter: Cell<usize>,
 }
 
 fn main() {
+    ::std::env::set_var("RUST_LOG", "actix_web=info");
+    env_logger::init();
     let sys = System::new("jake");
 
     // start http server
     server::new(|| {
-        App::new()
-            .resource("/users", |r| {
-                r.get().with(list);
-                r.post().with2(create);
-            })
+        App::with_state(AppState{counter: Cell::new(0)})
+            .middleware(middleware::Logger::default())
+            .resource("/", index)
+            .resource("/users", users::routes)
     }).bind("0.0.0.0:8080")
         .unwrap()
         .start();
 
     println!("Started http server: 127.0.0.1:8080");
     let _ = sys.run();
+}
+
+fn index(r: &mut ResourceHandler<AppState>) {
+    r.get().f(|_| HttpResponse::Found().header("Location", "/users").finish());
 }

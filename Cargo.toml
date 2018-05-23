@@ -21,3 +21,5 @@ horrorshow = "0.6"
 
 actix = "0.5"
 actix-web = "^0.5"
+
+env_logger = "0.5"
