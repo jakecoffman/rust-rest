@@ -695,12 +695,13 @@ dependencies = [
 
 [[package]]
 name = "http"
-version = "0.1.5"
+version = "0.1.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75df369fd52c60635208a4d3e694777c099569b3dcf4844df8f652dc004644ab"
+checksum = "2790658cddc82e82b08e25176c431d7015a0adeb1718498715cbd20138a0bf68"
 dependencies = [
  "bytes",
  "fnv",
+ "itoa 0.4.1",
 ]
 
 [[package]]
