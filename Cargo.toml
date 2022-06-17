@@ -15,7 +15,7 @@ futures = "0.1"
 tokio-io = "=0.1.5"
 tokio-core = "=0.1.12"
 http = "0.1"
-diesel = { version = "1.2", features = ["postgres"] }
+diesel = { version = "1.4", features = ["postgres"] }
 postgres = "0.15"
 horrorshow = "0.6"
 
